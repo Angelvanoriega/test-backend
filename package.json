@@ -8,17 +8,22 @@
     "debug": "DEBUG=api:* nodemon --inspect -e js src/app.js --exec babel-node",
     "debug-brk": "DEBUG=api:* nodemon --inspect-brk -e js src/app.js --exec babel-node",
     "lint": "./node_modules/.bin/eslint src/*; true",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cross-env-shell DEBUG=api:* nodemon -e js src/app.js --exec babel-node"
   },
   "engines": {
     "node": "^8.6.0"
   },
   "dependencies": {
+    "@koa/cors": "^2.2.3",
+    "cors": "^2.8.5",
     "debug": "^2.6.8",
     "dotenv": "^4.0.0",
+    "jsonwebtoken": "^8.5.1",
     "koa": "^2.2.0",
     "koa-bodyparser": "^4.2.0",
     "koa-compose": "^4.0.0",
+    "koa-jwt": "^3.5.1",
     "koa-logger": "^2.0.1",
     "koa-orm": "^2.0.0",
     "koa-router": "^7.2.0",

@@ -1,4 +1,3 @@
-
 const user = (sequelize, DataTypes) => {
   const userModel = sequelize.define('user', {
     id: {
@@ -13,14 +12,15 @@ const user = (sequelize, DataTypes) => {
     },
     email: {
       type: DataTypes.STRING(45),
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     birthday: {
       type: DataTypes.DATE,
       allowNull: false
     }
   }, {
-    tableName: 'user',
+    tableName: 'user'
   });
 
   return userModel;

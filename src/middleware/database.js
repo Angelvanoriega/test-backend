@@ -8,7 +8,7 @@ const dbConfig = {
   username: config.db.username,
   password: config.db.password,
   dialect: config.db.dialect,
-  host: config.db.hots,
+  host: config.db.host,
   port: config.db.port,
   pool: {
     maxConnections: 10,

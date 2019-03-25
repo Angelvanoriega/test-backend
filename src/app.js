@@ -6,10 +6,32 @@ import config from './config';
 import router from './router';
 import db from './middleware/database';
 
+const jwt = require('koa-jwt');
+const cors = require('@koa/cors');
 
 console.info(`ROOT_PATH: ${config.ROOT_PATH}`);
-
 const app = new Koa();
+
+app.use(cors());
+
+// Custom 401 handling
+app.use(async (ctx, next) => next().catch((err) => {
+  if (err.status === 401) {
+    ctx.status = 401;
+    const errMessage = err.originalError ?
+      err.originalError.message : err.message;
+    ctx.body = {
+      error: errMessage
+    };
+    ctx.set('X-Status-Reason', errMessage);
+  } else {
+    throw err;
+  }
+}));
+
+app.use(jwt({ secret: 'secretkey' }).unless({
+  path: ['/', '/login', '/register', '/sync', '/users']
+}));
 
 // sequelize & squel
 app.use(db);

@@ -15,6 +15,16 @@
 * Implement jwt Auth. For login, the user should call to /login and use his name and email as credentials.
 * Only users logged in should be able to edit their data.
 
+#### Result ####
+* FrontEnd for test API in Amazon S3
+  * http://testbackendivandiaz.s3-website-us-east-1.amazonaws.com/
+* Backend server in Amazon EC2 
+  * ec2-174-129-62-171.compute-1.amazonaws.com
+* Database MySQL in Amazon RDS 
+  * cuidamimascota.coidxps7ktct.us-west-2.rds.amazonaws.com
+
+![alt text](https://4.bp.blogspot.com/-Au7rb_PYGiQ/WX8_ATaGvAI/AAAAAAAAHOw/H126vk24YHsOUC8hNDhvjqc1hd0iw45HgCLcBGAs/s1600/01_AWS_Architecture.png "AWS")
+
 2) ### Create a query to get sales by year and month from this table ###
 
 | id  | provider_id | client_id  | price | created             |
@@ -39,9 +49,13 @@ Ouput example:
 | 2019 |  02   |   1         | $1900 |
 | 2019 |  03   |   1         | $900  |
 
+#### Result ####
+Queries are in the sql folder
 
 3) ### What are the differences between? ###
 
-```throw new Error('something bad happened');```
+```throw new Error('something bad happened');``` 
+It handles errors synchronously which makes the error an exception
 
 ```callback(new Error('something bad happened'));```
+Error handling pattern which calls a function to control the error. This pattern is more common in the handling of asynchronous errors.

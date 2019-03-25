@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <title>Test-Backend</title>
+</head>
+<body>
+<br>
+<div>
+    <button onclick="sync()">Sync</button>
+    <label id="sync"></label>
+</div>
+<br>
+<table id="table" width="95%" align="center" border="1">
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>email</th>
+        <th>birthday</th>
+        <th>createdAt</th>
+        <th>updatedAt</th>
+    </tr>
+    </thead>
+    <tbody id="tbody">
+    </tbody>
+</table>
+<table width="95%" align="center" border="0">
+    <tr>
+        <td width="50%">
+            <h4>Register</h4>
+            <p id="register_p"></p>
+            <table align="center">
+                <tr>
+                    <td><label for="name">Name:</label></td>
+                    <td><input type="text" id="name" name="name" required
+                               minlength="1" maxlength="50" size="50"></td>
+                </tr>
+                <tr>
+                    <td><label for="email">Email:</label></td>
+                    <td><input type="text" id="email" name="email" required
+                               minlength="1" maxlength="50" size="50"></td>
+                </tr>
+                <tr>
+                    <td><label for="birthday">Birthday:</label></td>
+                    <td><input type="text" id="birthday" name="birthday" required
+                               minlength="1" maxlength="50" size="50"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="float: right">
+                        <button onclick="register()">Register</button>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td width="50%">
+            <h4>Login</h4>
+            <p id="login_p"></p>
+            <table align="center">
+                <tr>
+                    <td><label for="loginname">Name:</label></td>
+                    <td><input type="text" id="loginname" name="loginname" required
+                               minlength="1" maxlength="50" size="50"></td>
+                </tr>
+                <tr>
+                    <td><label for="loginemail">Email:</label></td>
+                    <td><input type="text" id="loginemail" name="loginemail" required
+                               minlength="1" maxlength="50" size="50"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="float: right">
+                        <button onclick="login()">Login</button>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4>Update</h4>
+            <p id="update_p"></p>
+            <table align="center">
+                <tr>
+                    <td><label for="updateid">UserId:</label></td>
+                    <td><input type="text" id="updateid" name="updateid" required
+                               minlength="1" maxlength="50" size="50"></td>
+                </tr>
+                <tr>
+                    <td><label for="updatename">Name:</label></td>
+                    <td><input type="text" id="updatename" name="updatename" required
+                               minlength="1" maxlength="50" size="50"></td>
+                </tr>
+                <tr>
+                    <td><label for="updateemail">Email:</label></td>
+                    <td><input type="text" id="updateemail" name="updateemail" required
+                               minlength="1" maxlength="50" size="50"></td>
+                </tr>
+                <tr>
+                    <td><label for="updatebirthday">Birthday:</label></td>
+                    <td><input type="text" id="updatebirthday" name="updatebirthday" required
+                               minlength="1" maxlength="50" size="50"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="float: right">
+                        <button onclick="update()">Update</button>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td>
+            <h4>Delete</h4>
+            <p id="delete_p"></p>
+            <table align="center">
+                <tr>
+                    <td><label for="deleteid">UserId:</label></td>
+                    <td><input type="text" id="deleteid" name="deleteid" required
+                               minlength="1" maxlength="50" size="50"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="float: right">
+                        <button onclick="remove()">Delete</button>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<script>
+    const server = "http://174.129.62.171:3000";
+
+    $(document).ready(function () {
+        getAllUsers();
+    });
+
+    function getAllUsers() {
+        $.ajax({
+            "url": server + "/users",
+            "method": "GET",
+            success: function (response) {
+                $("#tbody").empty();
+                var users = response.users;
+                for (var i = 0; i < users.length; i++) {
+                    var id = users[i].id;
+                    var username = users[i].name;
+                    var name = users[i].email;
+                    var lastname = users[i].birthday;
+                    var createdAt = users[i].createdAt;
+                    var updatedAt = users[i].updatedAt;
+                    $('#table tbody').append('<tr><td>' + id + '</td><td>' +
+                        username + '</td><td>' + name + '</td><td>' +
+                        lastname + '</td><td>' + createdAt + '</td><td>' +
+                        updatedAt + '</td></tr>')
+                }
+            }
+        });
+    }
+
+
+    function login() {
+        $.ajax({
+            "url": server + "/login",
+            "method": "POST",
+            "data": {
+                name: document.getElementById("loginname").value,
+                email: document.getElementById("loginemail").value,
+            },
+            success: function (response, status, xhr) {
+                localStorage.setItem('token', xhr.responseJSON.key);
+                drawresponse("login_p", {responseText: 'Token saved in local storage'}, xhr.status);
+            }, error: function (xhr) {
+                drawresponse("login_p", xhr, xhr.status);
+            },
+        });
+    }
+
+    function remove() {
+        if (!document.getElementById("deleteid").value) {
+            drawresponse("delete_p", {responseText: 'UserId is required'}, '9000');
+        } else {
+            $.ajax({
+                "headers": {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "cache-control": "no-cache",
+                    "Authorization": 'Bearer ' + localStorage.getItem("token"),
+                },
+                "url": server + "/api/users/" + document.getElementById("deleteid").value,
+                "method": "DELETE",
+                success: function (response, status, xhr) {
+                    getAllUsers();
+                    drawresponse("delete_p", xhr, xhr.status);
+                }, error: function (xhr) {
+                    drawresponse("delete_p", xhr, xhr.status);
+                },
+            });
+        }
+    }
+
+    function update() {
+        if (!document.getElementById("updateid").value) {
+            drawresponse("update_p", {responseText: 'UserId is required'}, '9000');
+        } else {
+            $.ajax({
+                "headers": {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "cache-control": "no-cache",
+                    "Authorization": 'Bearer ' + localStorage.getItem("token"),
+                },
+                "url": server + "/api/users/" + document.getElementById("updateid").value,
+                "method": "PUT",
+                "data": {
+                    name: document.getElementById("updatename").value,
+                    email: document.getElementById("updateemail").value,
+                    birthday: document.getElementById("updatebirthday").value
+                },
+                success: function (response, status, xhr) {
+                    getAllUsers();
+                    drawresponse("update_p", xhr, xhr.status);
+                }, error: function (xhr) {
+                    drawresponse("update_p", xhr, xhr.status);
+                },
+            });
+        }
+    }
+
+    function register() {
+        $.ajax({
+            "url": server + "/register",
+            "method": "POST",
+            "data": {
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                birthday: document.getElementById("birthday").value
+            },
+            success: function (response, status, xhr) {
+                getAllUsers();
+                drawresponse("register_p", xhr, xhr.status);
+            }, error: function (xhr) {
+                drawresponse("register_p", xhr, xhr.status);
+            },
+        });
+    }
+
+    function sync() {
+        $.ajax({
+            "url": server + "/sync",
+            "method": "GET",
+            success: function (response, status, xhr) {
+                wait(2000);
+                getAllUsers();
+                drawresponse("sync", xhr, xhr.status);
+            }, error: function (xhr) {
+                drawresponse("sync", xhr, xhr.status);
+            }
+        });
+    }
+
+    function wait(ms) {
+        var start = new Date().getTime();
+        var end = start;
+        while (end < start + ms) {
+            end = new Date().getTime();
+        }
+    }
+
+    function drawresponse(element, response, status) {
+        if (response.hasOwnProperty('responseJSON')) {
+            if (response.responseJSON.hasOwnProperty('message')) {
+                response = response.responseJSON.message;
+            } else if (response.responseJSON.hasOwnProperty('error')) {
+                response = response.responseJSON.error;
+            }
+        } else {
+            response = response.responseText;
+        }
+        document.getElementById(element).innerHTML = status + " - " + response;
+        if (status >= 400) {
+            document.getElementById(element).style.color = "red";
+        } else {
+            document.getElementById(element).style.color = "green";
+        }
+    }
+</script>
+</body>
+</html>
